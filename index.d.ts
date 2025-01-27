@@ -727,7 +727,7 @@ declare module 'binance-api-node' {
     futuresPositionMode(options?: { recvWindow: number }): Promise<PositionModeResult>
     futuresPositionModeChange(options: {
       dualSidePosition: string
-      recvWindow: number
+      recvWindow?: number
     }): Promise<ChangePositionModeResult>
     futuresLeverage(options: {
       symbol: string
