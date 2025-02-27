@@ -8,7 +8,6 @@ declare module 'binance-api-node' {
     httpFutures?: string
     wsBase?: string
     wsFutures?: string
-    proxy?: string
   }): Binance
 
   export type ErrorCodes_LT =

@@ -1,9 +1,6 @@
 import crypto from 'crypto'
 import zip from 'lodash.zipobject'
-import HttpsProxyAgent from 'https-proxy-agent'
 import JSONbig from 'json-bigint'
-
-import 'isomorphic-fetch'
 
 const BASE = 'https://api.binance.com'
 const FUTURES = 'https://fapi.binance.com'
@@ -23,8 +20,8 @@ const info = {
 const makeQueryString = q =>
   q
     ? `?${Object.keys(q)
-        .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(q[k])}`)
-        .join('&')}`
+      .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(q[k])}`)
+      .join('&')}`
     : ''
 
 /**
@@ -47,8 +44,8 @@ const responseHandler = res => {
   const marketName = res.url.includes(FUTURES)
     ? 'futures'
     : res.url.includes(COIN_FUTURES)
-    ? 'delivery'
-    : 'spot'
+      ? 'delivery'
+      : 'spot'
 
   Object.keys(headersMapping).forEach(key => {
     const outKey = headersMapping[key]
@@ -119,13 +116,12 @@ const checkParams = (name, payload, requires = []) => {
  * @param {object} headers
  * @returns {object} The api response
  */
-const publicCall = ({ proxy, endpoints }) => (path, data, method = 'GET', headers = {}) => {
+const publicCall = ({ endpoints }) => (path, data, method = 'GET', headers = {}) => {
   return sendResult(
     fetch(
-      `${
-        path.includes('/fapi') || path.includes('/futures')
-          ? endpoints.futures
-          : path.includes('/dapi')
+      `${path.includes('/fapi') || path.includes('/futures')
+        ? endpoints.futures
+        : path.includes('/dapi')
           ? endpoints.delivery
           : endpoints.base
       }${path}${makeQueryString(data)}`,
@@ -133,7 +129,6 @@ const publicCall = ({ proxy, endpoints }) => (path, data, method = 'GET', header
         method,
         json: true,
         headers,
-        ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
       },
     ),
   )
@@ -169,7 +164,6 @@ const keyCall = ({ apiKey, pubCall }) => (path, data, method = 'GET') => {
 const privateCall = ({
   apiKey,
   apiSecret,
-  proxy,
   endpoints,
   getTime = defaultGetTime,
   pubCall,
@@ -195,10 +189,9 @@ const privateCall = ({
 
     return sendResult(
       fetch(
-        `${
-          path.includes('/fapi') || path.includes('/futures')
-            ? endpoints.futures
-            : path.includes('/dapi')
+        `${path.includes('/fapi') || path.includes('/futures')
+          ? endpoints.futures
+          : path.includes('/dapi')
             ? endpoints.delivery
             : endpoints.base
         }${path}${noData ? '' : makeQueryString(newData)}`,
@@ -206,7 +199,6 @@ const privateCall = ({
           method,
           headers: { 'X-MBX-APIKEY': apiKey },
           json: true,
-          ...(proxy ? { agent: new HttpsProxyAgent(proxy) } : {}),
         },
       ),
     )
